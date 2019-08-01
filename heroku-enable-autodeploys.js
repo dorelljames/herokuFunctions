@@ -29,7 +29,7 @@ app.post('/', function(req, res) {
     }
   })
     .then(function (response) {
-      res.status(201).json(response.data);
+      res.status(200).json(response.data);
     })
     .catch(function (error) {
       res.status(500).json(error);
