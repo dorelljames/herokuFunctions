@@ -13,13 +13,14 @@ app.post('/', function (req, res) {
   const { name } = req.body;
   
   axios({
-    url: "https://api.heroku.com/apps", 
+    url: "https://api.heroku.com/apps",
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + APP_TOKEN
-    }
+    },
+    data: { name }
   })
     .then(function (response) {
       console.log(response);
