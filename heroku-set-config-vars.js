@@ -8,21 +8,20 @@ app.use(bodyParser.json());
 
 app.post('/', function(req, res) {
   const { APP_TOKEN } = req.webtaskContext.secrets;
-
-  const { name } = req.body;
-  if (!name) {
+  const { app_id, config_vars } = req.body
+  if (!req.body) {
     return res.status(400).json({ name: "Name is required!" });
   }
 
   axios({
-    url: "https://api.heroku.com/apps",
-    method: 'POST',
+    url: `https://api.heroku.com/apps/${app_id}/config-vars`,
+    method: 'PATCH',
     headers: {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + APP_TOKEN
     },
-    data: { name }
+    data: { config_vars }
   })
     .then(function (response) {
       res.status(201).json(response.data);
