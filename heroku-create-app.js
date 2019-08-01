@@ -1,12 +1,33 @@
 var express    = require('express');
 var Webtask    = require('webtask-tools');
 var bodyParser = require('body-parser');
+var axios      = require("axios");
 var app = express();
 
 app.use(bodyParser.json());
 
+const options = (token) => ()
+
 app.post('/', function (req, res) {
-  res.sendStatus(200);
+  const { APP_TOKEN } = req.webtaskContext.secrets;
+  const { name } = req.body;
+  
+  axios("https://api.heroku.com/apps", {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + APP_TOKEN
+    }
+  })
+    .then(function (response) {
+      console.log(response);
+      res.sendStatus(200);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.sendStatus(500);
+    });
 });
 
 module.exports = Webtask.fromExpress(app);
