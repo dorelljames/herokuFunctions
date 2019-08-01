@@ -21,7 +21,7 @@ app.post('/', function(req, res) {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + APP_TOKEN
     },
-    data: { config_vars }
+    data: config_vars
   })
     .then(function (response) {
       res.status(200).json(response.data);
