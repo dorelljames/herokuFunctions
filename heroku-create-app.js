@@ -12,7 +12,8 @@ app.post('/', function (req, res) {
   const { APP_TOKEN } = req.webtaskContext.secrets;
   const { name } = req.body;
   
-  axios("https://api.heroku.com/apps", {
+  axios({
+    url: "https://api.heroku.com/apps", 
     method: 'POST',
     headers: {
       'Accept': 'application/json',
