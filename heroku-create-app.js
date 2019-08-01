@@ -7,10 +7,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.post('/', function (req, res) {
-  const { HEROKU_TOKEN } = req.webtaskContext.secrets;
-  console.log(HEROKU_TOKEN);
-  return res.sendStatus(200);
-
+  const { APP_TOKEN } = req.webtaskContext.secrets;
   const { name } = req.body;
 
   axios({
@@ -19,7 +16,7 @@ app.post('/', function (req, res) {
     headers: {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + APP_TOKEN
+      'Authorization': 'Bearer ' + HEROKU_TOKEN
     },
     data: { name }
   })
