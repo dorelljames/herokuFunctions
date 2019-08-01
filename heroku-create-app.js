@@ -14,7 +14,7 @@ app.post('/', function (req, res) {
     url: "https://api.heroku.com/apps",
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + APP_TOKEN
     },
