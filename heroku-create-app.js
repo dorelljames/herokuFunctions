@@ -16,7 +16,7 @@ app.post('/', function (req, res) {
     headers: {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + APP_TOKEN
+      'Authorization': 'Bearer 9471a50f-3027-4677-a75c-f792f512c9de'
     },
     data: { name }
   })
