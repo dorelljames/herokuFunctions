@@ -6,7 +6,7 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/', function (req, res) {
+app.post('/', function(req, res) {
   const { APP_TOKEN } = req.webtaskContext.secrets;
 
   const { name } = req.body;
@@ -26,11 +26,11 @@ app.post('/', function (req, res) {
   })
     .then(function (response) {
       console.log(response);
-      res.sendStatus(200);
+      res.status(201).json(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      res.sendStatus(500);
+      res.status(500).json(error);
     });
 });
 
