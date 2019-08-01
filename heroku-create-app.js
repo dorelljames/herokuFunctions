@@ -25,11 +25,11 @@ app.post('/', function(req, res) {
     data: { name }
   })
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       res.status(201).json(response.data);
     })
     .catch(function (error) {
-      console.log(error);
+      // console.log(error);
       res.status(500).json(error);
     });
 });
