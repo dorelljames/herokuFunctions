@@ -18,7 +18,7 @@ app.post('/', function(req, res) {
     url: `https://kolkrabbi.heroku.com/apps/${app_id}/github`,
     method: 'POST',
     headers: {
-      // 'Accept': 'application/vnd.heroku+json; version=3',
+      'Accept': 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + APP_TOKEN
     },
