@@ -6,12 +6,10 @@ var app = express();
 
 app.use(bodyParser.json());
 
-const options = (token) => ()
-
 app.post('/', function (req, res) {
   const { APP_TOKEN } = req.webtaskContext.secrets;
   const { name } = req.body;
-  
+
   axios({
     url: "https://api.heroku.com/apps",
     method: 'POST',
