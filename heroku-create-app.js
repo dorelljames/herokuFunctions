@@ -9,7 +9,8 @@ app.use(bodyParser.json());
 app.post('/', function (req, res) {
   const { APP_TOKEN } = req.webtaskContext.secrets;
   console.log(APP_TOKEN);
-  res.sendStatus(200);
+  return res.sendStatus(200);
+
   const { name } = req.body;
 
   axios({
