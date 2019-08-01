@@ -8,7 +8,11 @@ app.use(bodyParser.json());
 
 app.post('/', function (req, res) {
   const { APP_TOKEN } = req.webtaskContext.secrets;
+
   const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ name: "Name is required!" });
+  }
 
   axios({
     url: "https://api.heroku.com/apps",
