@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 app.post('/', function (req, res) {
   const { HEROKU_TOKEN } = req.webtaskContext.secrets;
-  console.log(APP_TOKEN);
+  console.log(HEROKU_TOKEN);
   return res.sendStatus(200);
 
   const { name } = req.body;
