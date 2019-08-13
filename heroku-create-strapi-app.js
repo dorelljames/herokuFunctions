@@ -19,10 +19,10 @@ app.post('/', async function(req, res) {
     TRIGGER_NEW_BUILD_URL,
   } = req.webtaskContext.secrets;
   const { name, repo_path } = req.body;
-  if (!name) {
+  if (!name || !repo_path) {
     return res
       .status(400)
-      .json({ name: 'App name is required to create new Strapi app!' });
+      .json({ name: 'App name and repo_path are required to create new Strapi app!' });
   }
 
   let heroku_app,
@@ -143,22 +143,6 @@ app.post('/', async function(req, res) {
       data: {
         app_id: heroku_app.data.id,
         repo_path,
-      },
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: 'Unable to connect to GitHub for app',
-      error: err,
-    });
-  }
-
-  // Set automatic deploy
-  try {
-    heroku_app_enable_autodeploys = axios({
-      url: ENABLE_AUTODEPLOYS,
-      method: 'POST',
-      data: {
-        app_id: heroku_app.data.id,
       },
     });
   } catch (err) {
