@@ -22,7 +22,9 @@ app.post('/', async function(req, res) {
   if (!name || !repo_path) {
     return res
       .status(400)
-      .json({ name: 'App name and repo_path are required to create new Strapi app!' });
+      .json({
+        name: 'App name and repo_path are required to create new Strapi app!',
+      });
   }
 
   let heroku_app,
