@@ -186,7 +186,7 @@ app.post('/', async function(req, res) {
       });
     } catch (err) {
       return res.status(500).json({
-        message: 'Unable to connect to trigger new build',
+        message: 'Unable to trigger new build',
         error: err,
       });
     }
