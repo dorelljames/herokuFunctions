@@ -25,7 +25,6 @@ app.post('/', async function(req, res) {
   }
 
   let heroku_app,
-    heroku_app_addon,
     heroku_app_get_env_vars,
     heroku_app_set_env_vars,
     heroku_app_set_webhooks,
@@ -47,7 +46,7 @@ app.post('/', async function(req, res) {
 
   // Add mLab addon for database
   try {
-    heroku_app_addon = await axios({
+    await axios({
       url: ENABLE_ADDON_URL,
       method: 'POST',
       data: {
@@ -137,7 +136,7 @@ app.post('/', async function(req, res) {
 
   // App connect to GitHub
   try {
-    heroku_app_connect_to_github = await axios({
+    heroku_app_connect_to_github = axios({
       url: CONNECT_TO_GITHUB_URL,
       method: 'POST',
       data: {
@@ -168,12 +167,30 @@ app.post('/', async function(req, res) {
     });
   }
 
-  // Begin deploy master branch
-
   Promise.all([
     heroku_app_set_env_vars,
     heroku_app_set_webhooks,
-  ]).then(results => {
+    heroku_app_connect_to_github,
+  ]).then(async results => {
+    // Set automatic deploy
+    try {
+      heroku_app_enable_autodeploys = await axios({
+        url: ENABLE_AUTODEPLOYS,
+        method: 'POST',
+        data: {
+          app_id: heroku_app.data.id,
+        },
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: 'Unable to connect to GitHub for app',
+        error: err,
+      });
+    }
+
+    // Begin deploy master branch
+    
+
     return res.json({ message: 'Successfully created Strapi app!' });
   });
 });
