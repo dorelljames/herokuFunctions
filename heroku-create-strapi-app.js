@@ -184,7 +184,7 @@ app.post('/', async function(req, res) {
       });
     } catch (err) {
       return res.status(500).json({
-        message: 'Unable to connect to GitHub for app',
+        message: 'Unable to connect to enable autodeploys',
         error: err,
       });
     }
@@ -200,7 +200,7 @@ app.post('/', async function(req, res) {
       });
     } catch (err) {
       return res.status(500).json({
-        message: 'Unable to connect to GitHub for app',
+        message: 'Unable to connect to trigger new build',
         error: err,
       });
     }
