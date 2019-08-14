@@ -11,6 +11,7 @@ app.post('/', async function(req, res) {
   const {
     CREATE_APP_URL,
     ENABLE_ADDON_URL,
+    SET_MONGO_BUILDPACK_URL,
     SET_ENV_VARS_URL,
     GET_ENV_VARS_URL,
     SET_BUILD_WEBHOOKS_URL,
@@ -30,6 +31,7 @@ app.post('/', async function(req, res) {
   let heroku_app,
     heroku_app_get_env_vars,
     heroku_app_set_env_vars,
+    heroku_app_set_mongo_buildpack,
     heroku_app_set_webhooks,
     heroku_app_connect_to_github,
     heroku_app_enable_autodeploys;
@@ -119,6 +121,22 @@ app.post('/', async function(req, res) {
     return res
       .status(500)
       .json({ message: 'Unable to set environment variables', error: err });
+  }
+
+  // Set Mongo Buildpack
+  try {
+    heroku_app_set_webhooks = axios({
+      url: SET_MONGO_BUILDPACK_URL,
+      method: 'POST',
+      data: {
+        app_id: heroku_app.data.id,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Unable to set mongo buildpack',
+      error: err,
+    });
   }
 
   // Add webhook to notify WebriQ App successful build
