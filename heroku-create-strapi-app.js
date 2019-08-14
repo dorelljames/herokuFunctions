@@ -21,11 +21,9 @@ app.post('/', async function(req, res) {
   } = req.webtaskContext.secrets;
   const { name, repo_path } = req.body;
   if (!name || !repo_path) {
-    return res
-      .status(400)
-      .json({
-        name: 'App name and repo_path are required to create new Strapi app!',
-      });
+    return res.status(400).json({
+      name: 'App name and repo_path are required to create new Strapi app!',
+    });
   }
 
   let heroku_app,
