@@ -18,6 +18,7 @@ app.post('/', async function(req, res) {
     CONNECT_TO_GITHUB_URL,
     ENABLE_AUTODEPLOYS,
     TRIGGER_NEW_BUILD_URL,
+    APP_MONGODB_URI_SRC
   } = req.webtaskContext.secrets;
   const { name, repo_path } = req.body;
   if (!name || !repo_path) {
@@ -86,6 +87,7 @@ app.post('/', async function(req, res) {
       data: {
         app_id: heroku_app.data.id,
         config_vars: {
+          MONGODB_URI_SRC: APP_MONGODB_URI_SRC,
           DATABASE_AUTHENTICATION_DATABASE: heroku_app_get_env_vars.data.MONGODB_URI
             .split('/')
             .pop(),
