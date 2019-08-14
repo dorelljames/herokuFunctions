@@ -125,7 +125,7 @@ app.post('/', async function(req, res) {
 
   // Set Mongo Buildpack
   try {
-    heroku_app_set_webhooks = axios({
+    heroku_app_set_mongo_buildpack = axios({
       url: SET_MONGO_BUILDPACK_URL,
       method: 'POST',
       data: {
@@ -175,6 +175,7 @@ app.post('/', async function(req, res) {
   Promise.all([
     heroku_app_set_env_vars,
     heroku_app_set_webhooks,
+    heroku_app_set_mongo_buildpack,
     heroku_app_connect_to_github,
   ]).then(async results => {
     // Set automatic deploy
