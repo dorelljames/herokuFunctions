@@ -25,7 +25,13 @@ app.post('/', function(req, res) {
     },
     data: {
       updates: [
-        { buildpack: 'https://github.com/webriq/heroku-buildpack-mongo' },
+        {
+          buildpack: 'heroku/nodejs',
+          ordinal: 0,
+        },
+        {
+          buildpack: 'https://github.com/webriq/heroku-buildpack-mongo',
+        },
       ],
     },
   })
