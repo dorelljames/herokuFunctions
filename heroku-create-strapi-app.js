@@ -21,15 +21,13 @@ app.post('/', async function(req, res) {
     APP_MONGODB_URI_SRC,
     CLONE_REPO_TEMPLATE_URL
   } = req.webtaskContext.secrets;
-  console.log(req.body);
+
   const { name, repo_path } = req.body;
   if (!name || !repo_path) {
     return res.status(400).json({
       name: 'App name and repo_path are required to create new Strapi app!',
     });
   }
-
-  
 
   let cloned_github_repo,
     heroku_app,
@@ -46,7 +44,9 @@ app.post('/', async function(req, res) {
       url: CLONE_REPO_TEMPLATE_URL,
       method: 'POST',
       data: {
-        name,
+        name: req.body.name,
+        ownerId: req.body.ownerId,
+        repositoryId: req.body.repositoryId
       },
     });
   } catch (err) {
