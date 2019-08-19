@@ -19,7 +19,9 @@ app.post('/', async function(req, res) {
     ENABLE_AUTODEPLOYS,
     TRIGGER_NEW_BUILD_URL,
     APP_MONGODB_URI_SRC,
-    CLONE_REPO_TEMPLATE_URL
+    CLONE_REPO_TEMPLATE_URL,
+    CLONE_REPO_TEMPLATE_OWNER_ID,
+    CLONE_REPO_TEMPLATE_NAME
   } = req.webtaskContext.secrets;
 
   const { name, repo_path } = req.body;
@@ -45,8 +47,8 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         name: req.body.name,
-        ownerId: req.body.ownerId,
-        repositoryId: req.body.repositoryId
+        ownerId: CLONE_REPO_TEMPLATE_OWNER_ID,
+        repositoryId: CLONE_REPO_TEMPLATE_NAME
       },
     });
   } catch (err) {
