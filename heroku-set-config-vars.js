@@ -7,7 +7,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.post('/', function(req, res) {
-  const { APP_TOKEN } = req.webtaskContext.secrets;
+  const { APP_TOKEN_LIVE } = req.webtaskContext.secrets;
   const { app_id, config_vars } = req.body
   if (!req.body) {
     return res.status(400).json({ name: "Name is required!" });
