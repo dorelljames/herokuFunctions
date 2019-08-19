@@ -19,6 +19,7 @@ app.post('/', async function(req, res) {
     ENABLE_AUTODEPLOYS,
     TRIGGER_NEW_BUILD_URL,
     APP_MONGODB_URI_SRC,
+    CLONE_REPO_TEMPLATE_URL
   } = req.webtaskContext.secrets;
   console.log(req.body);
   const { name, repo_path } = req.body;
@@ -28,13 +29,29 @@ app.post('/', async function(req, res) {
     });
   }
 
-  let heroku_app,
+  
+
+  let cloned_github_repo,
+    heroku_app,
     heroku_app_get_env_vars,
     heroku_app_set_env_vars,
     heroku_app_set_mongo_buildpack,
     heroku_app_set_webhooks,
     heroku_app_connect_to_github,
     heroku_app_enable_autodeploys;
+
+  // Clone repository from template repo
+  try {
+    heroku_app = await axios({
+      url: CLONE_REPO_TEMPLATE_URL,
+      method: 'POST',
+      data: {
+        name,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
 
   // Create new web app on Heroku
   try {
