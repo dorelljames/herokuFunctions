@@ -7,7 +7,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.post('/', function(req, res) {
-  const { APP_TOKEN } = req.webtaskContext.secrets;
+  const { APP_TOKEN_LIVE } = req.webtaskContext.secrets;
 
   const { name } = req.body;
   if (!name) {
