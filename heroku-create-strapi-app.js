@@ -40,7 +40,7 @@ app.post('/', async function(req, res) {
 
   // Clone repository from template repo
   try {
-    heroku_app = await axios({
+    cloned_github_repo = await axios({
       url: CLONE_REPO_TEMPLATE_URL,
       method: 'POST',
       data: {
