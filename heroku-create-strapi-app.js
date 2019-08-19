@@ -20,6 +20,7 @@ app.post('/', async function(req, res) {
     TRIGGER_NEW_BUILD_URL,
     APP_MONGODB_URI_SRC
   } = req.webtaskContext.secrets;
+  console.log(req.body);
   const { name, repo_path } = req.body;
   if (!name || !repo_path) {
     return res.status(400).json({
