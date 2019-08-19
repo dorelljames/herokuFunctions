@@ -18,7 +18,7 @@ app.post('/', async function(req, res) {
     CONNECT_TO_GITHUB_URL,
     ENABLE_AUTODEPLOYS,
     TRIGGER_NEW_BUILD_URL,
-    APP_MONGODB_URI_SRC
+    APP_MONGODB_URI_SRC,
   } = req.webtaskContext.secrets;
   console.log(req.body);
   const { name, repo_path } = req.body;
@@ -211,7 +211,10 @@ app.post('/', async function(req, res) {
       });
     }
 
-    return res.json({ message: 'Successfully created Strapi app!', data: heroku_app });
+    return res.json({
+      message: 'Successfully created Strapi app!',
+      data: heroku_app,
+    });
   });
 });
 
