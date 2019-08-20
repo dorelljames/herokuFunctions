@@ -55,7 +55,8 @@ app.post("/", async function(req, res) {
     return res.status(500).json(err);
   }
 
-  return res.json(cloned_github_repo);
+  console.log(cloned_github_repo);
+  return res.json({ message: "OK" });
 
   // Create new web app on Heroku
   // try {
