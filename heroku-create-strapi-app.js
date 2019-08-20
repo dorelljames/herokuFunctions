@@ -183,7 +183,7 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         app_id: heroku_app.data.id,
-        repo_path: CLONE_REPO_TEMPLATE_REPO_PATH,
+        repo_path: cloned_github_repo && cloned_github_repo.data.full_name,,
       },
     });
   } catch (err) {
