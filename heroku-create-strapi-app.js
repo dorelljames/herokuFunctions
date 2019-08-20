@@ -24,10 +24,10 @@ app.post('/', async function(req, res) {
     CLONE_REPO_TEMPLATE_REPO_ID
   } = req.webtaskContext.secrets;
 
-  const { name, repo_path } = req.body;
-  if (!name || !repo_path) {
+  const { name } = req.body;
+  if (!name) {
     return res.status(400).json({
-      name: 'App name and repo_path are required to create new Strapi app!',
+      name: 'App name is required to create new Strapi app!',
     });
   }
 
