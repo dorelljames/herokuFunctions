@@ -61,7 +61,7 @@ app.post('/', async function(req, res) {
     data = {
       app_id: heroku_app.data.id,
       repo_path:
-        cloned_github_repo.data.cloneTemplateRepository.repository
+        cloned_github_repo.data.data.cloneTemplateRepository.repository
           .nameWithOwner,
     };
   } catch (err) {
