@@ -57,18 +57,16 @@ app.post('/', async function(req, res) {
 
   console.log(JSON.stringify(cloned_github_repo.data, null, 2));
   let data;
-  try {
-    data = {
-      app_id: heroku_app.data.id,
-      repo_path:
-        cloned_github_repo.data.data.cloneTemplateRepository.repository
-          .nameWithOwner,
-    };
-  } catch (err) {
-    console.log('Something went wrong preparing data!', err);
-  }
-
-  console.log('data outside', data);
+  // try {
+  //   data = {
+  //     app_id: heroku_app.data.id,
+  //     repo_path:
+  //       cloned_github_repo.data.data.cloneTemplateRepository.repository
+  //         .nameWithOwner,
+  //   };
+  // } catch (err) {
+  //   console.log('Something went wrong preparing data!', err);
+  // }
 
   return res.json({ message: 'OK' });
 
