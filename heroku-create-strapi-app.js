@@ -21,8 +21,7 @@ app.post('/', async function(req, res) {
     APP_MONGODB_URI_SRC,
     CLONE_REPO_TEMPLATE_URL,
     CLONE_REPO_TEMPLATE_OWNER_ID,
-    CLONE_REPO_TEMPLATE_REPO_ID,
-    CLONE_REPO_TEMPLATE_REPO_PATH
+    CLONE_REPO_TEMPLATE_REPO_ID
   } = req.webtaskContext.secrets;
 
   const { name } = req.body;
