@@ -247,7 +247,7 @@ app.post('/', async function(req, res) {
       });
     }
 
-    return res.json({
+    return res.status(201).json({
       message: 'Successfully created Strapi app!',
       data: heroku_app.data,
     });
