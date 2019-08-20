@@ -1,13 +1,13 @@
-var express = require("express");
-var Webtask = require("webtask-tools");
-var bodyParser = require("body-parser");
-var Promise = require("bluebird");
-var axios = require("axios");
+var express = require('express');
+var Webtask = require('webtask-tools');
+var bodyParser = require('body-parser');
+var Promise = require('bluebird');
+var axios = require('axios');
 var app = express();
 
 app.use(bodyParser.json());
 
-app.post("/", async function(req, res) {
+app.post('/', async function(req, res) {
   const {
     CREATE_APP_URL,
     ENABLE_ADDON_URL,
@@ -21,13 +21,13 @@ app.post("/", async function(req, res) {
     APP_MONGODB_URI_SRC,
     CLONE_REPO_TEMPLATE_URL,
     CLONE_REPO_TEMPLATE_OWNER_ID,
-    CLONE_REPO_TEMPLATE_REPO_ID
+    CLONE_REPO_TEMPLATE_REPO_ID,
   } = req.webtaskContext.secrets;
 
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({
-      name: "App name is required to create new Strapi app!"
+      name: 'App name is required to create new Strapi app!',
     });
   }
 
@@ -44,19 +44,33 @@ app.post("/", async function(req, res) {
   try {
     cloned_github_repo = await axios({
       url: CLONE_REPO_TEMPLATE_URL,
-      method: "POST",
+      method: 'POST',
       data: {
         name: req.body.name,
         ownerId: CLONE_REPO_TEMPLATE_OWNER_ID,
-        repositoryId: CLONE_REPO_TEMPLATE_REPO_ID
-      }
+        repositoryId: CLONE_REPO_TEMPLATE_REPO_ID,
+      },
     });
   } catch (err) {
     return res.status(500).json(err);
   }
 
   console.log(cloned_github_repo.data);
-  return res.json({ message: "OK" });
+  let data;
+  try {
+    data = {
+      app_id: heroku_app.data.id,
+      repo_path:
+        cloned_github_repo.data.cloneTemplateRepository.repository
+          .nameWithOwner,
+    };
+  } catch (err) {
+    console.log('Something went wrong preparing data!', err);
+  }
+
+  console.log('data outside', data);
+
+  return res.json({ message: 'OK' });
 
   // Create new web app on Heroku
   // try {
