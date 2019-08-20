@@ -22,7 +22,6 @@ app.post('/', async function(req, res) {
     CLONE_REPO_TEMPLATE_URL,
     CLONE_REPO_TEMPLATE_OWNER_ID,
     CLONE_REPO_TEMPLATE_REPO_ID,
-    CLONE_REPO_TEMPLATE_REPO_PATH
   } = req.webtaskContext.secrets;
 
   const { name } = req.body;
@@ -178,14 +177,16 @@ app.post('/', async function(req, res) {
 
   // App connect to GitHub
   try {
-    heroku_app_connect_to_github = axios({
-      url: CONNECT_TO_GITHUB_URL,
-      method: 'POST',
-      data: {
-        app_id: heroku_app.data.id,
-        repo_path: cloned_github_repo.data.cloneTemplateRepository.repository.nameWithOwner
-      },
-    });
+    setTimeout(function() {
+      heroku_app_connect_to_github = axios({
+        url: CONNECT_TO_GITHUB_URL,
+        method: 'POST',
+        data: {
+          app_id: heroku_app.data.id,
+          repo_path: cloned_github_repo.data.cloneTemplateRepository.repository.nameWithOwner
+        },
+      });
+    }, 2500);
   } catch (err) {
     return res.status(500).json({
       message: 'Unable to connect to GitHub for app',
