@@ -21,7 +21,8 @@ app.post('/', async function(req, res) {
     APP_MONGODB_URI_SRC,
     CLONE_REPO_TEMPLATE_URL,
     CLONE_REPO_TEMPLATE_OWNER_ID,
-    CLONE_REPO_TEMPLATE_REPO_ID
+    CLONE_REPO_TEMPLATE_REPO_ID,
+    CLONE_REPO_TEMPLATE_REPO_PATH
   } = req.webtaskContext.secrets;
 
   const { name } = req.body;
@@ -182,7 +183,7 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         app_id: heroku_app.data.id,
-        repo_path,
+        CLONE_REPO_TEMPLATE_REPO_PATH,
       },
     });
   } catch (err) {
