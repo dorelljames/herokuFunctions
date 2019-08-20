@@ -56,6 +56,7 @@ app.post('/', async function(req, res) {
   }
 
   console.log(JSON.stringify(cloned_github_repo.data, null, 2));
+  console.log(cloned_github_repo.data.data.cloneTemplateRepository.repository.nameWithOwner)
   let data;
   // try {
   //   data = {
