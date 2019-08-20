@@ -55,7 +55,7 @@ app.post('/', async function(req, res) {
     return res.status(500).json(err);
   }
 
-  console.log(cloned_github_repo.data);
+  console.log(JSON.stringify(cloned_github_repo.data, null, 2));
   let data;
   try {
     data = {
