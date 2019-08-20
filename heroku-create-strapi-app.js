@@ -21,7 +21,7 @@ app.post('/', async function(req, res) {
     APP_MONGODB_URI_SRC,
     CLONE_REPO_TEMPLATE_URL,
     CLONE_REPO_TEMPLATE_OWNER_ID,
-    CLONE_REPO_TEMPLATE_REPO_ID
+    CLONE_REPO_TEMPLATE_REPO_ID,
   } = req.webtaskContext.secrets;
 
   const { name } = req.body;
@@ -48,7 +48,7 @@ app.post('/', async function(req, res) {
       data: {
         name: req.body.name,
         ownerId: CLONE_REPO_TEMPLATE_OWNER_ID,
-        repositoryId: CLONE_REPO_TEMPLATE_REPO_ID
+        repositoryId: CLONE_REPO_TEMPLATE_REPO_ID,
       },
     });
   } catch (err) {
@@ -182,7 +182,7 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         app_id: heroku_app.data.id,
-        repo_path: cloned_github_repo && cloned_github_repo.data.full_name,,
+        repo_path: cloned_github_repo && cloned_github_repo.data.full_name,
       },
     });
   } catch (err) {
