@@ -24,7 +24,7 @@ app.post('/', async function(req, res) {
     CLONE_REPO_TEMPLATE_REPO_ID,
   } = req.webtaskContext.secrets;
 
-  const { name } = req.body;
+  const { name, webhook_url } = req.body;
   if (!name) {
     return res.status(400).json({
       name: 'App name is required to create new Strapi app!',
@@ -166,6 +166,7 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         app_id: heroku_app.data.id,
+        url: webhook_url
       },
     });
   } catch (err) {
