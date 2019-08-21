@@ -26,7 +26,7 @@ app.post('/', function(req, res) {
     data: {
       level: 'sync',
       name: 'notify-webriq-app-for-release',
-      include: ['api:release'],
+      include: ['api:release', 'api:build'],
       url,
     },
   })
