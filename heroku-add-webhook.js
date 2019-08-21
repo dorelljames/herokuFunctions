@@ -27,7 +27,7 @@ app.post('/', function(req, res) {
       level: 'sync',
       name: 'notify-webriq-app-for-release',
       include: ['api:release'],
-      url: 'https://app.webriq.com/hooks',
+      url: 'https://afab3594.ngrok.io/hooks/heroku',
     },
   })
     .then(function(response) {
