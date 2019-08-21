@@ -166,7 +166,7 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         app_id: heroku_app.data.id,
-        url: webhook_url
+        url: webhook_url,
       },
     });
   } catch (err) {
