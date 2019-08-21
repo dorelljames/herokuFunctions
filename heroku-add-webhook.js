@@ -8,11 +8,11 @@ app.use(bodyParser.json());
 
 app.post('/', function(req, res) {
   const { APP_TOKEN_LIVE } = req.webtaskContext.secrets;
-  const { app_id } = req.body;
-  if (!app_id) {
+  const { app_id, url } = req.body;
+  if (!app_id || !url) {
     return res
       .status(400)
-      .json({ name: 'App ID is required to set webhooks!' });
+      .json({ name: 'App ID and URL is required to set webhooks!' });
   }
 
   axios({
@@ -27,7 +27,7 @@ app.post('/', function(req, res) {
       level: 'sync',
       name: 'notify-webriq-app-for-release',
       include: ['api:release'],
-      url: 'https://afab3594.ngrok.io/hooks/heroku',
+      url,
     },
   })
     .then(function(response) {
