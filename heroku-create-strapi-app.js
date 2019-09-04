@@ -150,6 +150,15 @@ app.post('/', async function(req, res) {
       method: 'POST',
       data: {
         app_id: heroku_app.data.id,
+        buildpack: [
+          {
+            buildpack: 'heroku/nodejs',
+            ordinal: 0,
+          },
+          {
+            buildpack: 'https://github.com/webriq/heroku-buildpack-mongo',
+          },
+        ]
       },
     });
   } catch (err) {
