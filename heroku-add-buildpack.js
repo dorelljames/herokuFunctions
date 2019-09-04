@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 app.post('/', function(req, res) {
   const { APP_TOKEN_LIVE } = req.webtaskContext.secrets;
-  const { app_id } = req.body;
+  const { app_id, buildpack } = req.body;
   if (!app_id) {
     return res
       .status(400)
@@ -24,15 +24,7 @@ app.post('/', function(req, res) {
       Authorization: 'Bearer ' + APP_TOKEN_LIVE,
     },
     data: {
-      updates: [
-        {
-          buildpack: 'heroku/nodejs',
-          ordinal: 0,
-        },
-        {
-          buildpack: 'https://github.com/webriq/heroku-buildpack-mongo',
-        },
-      ],
+      updates: buildpack,
     },
   })
     .then(function(response) {
