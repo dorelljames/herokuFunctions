@@ -23,10 +23,10 @@ app.post("/", async function(req, res) {
   } = req.webtaskContext.secrets;
 
   const { name, repo_path, webhook_url, config_vars = {} } = req.body;
-  if (!name || !webhook_url || !config_vars) {
+  if (!name || !webhook_url || !config_vars || !repo_path) {
     return res.status(400).json({
       message:
-        "App name, webhook_url, config_vars is required to create new Strapi app!"
+        "App name, webhook_url, repo_path, config_vars is required to create new Strapi app!"
     });
   }
 
