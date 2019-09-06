@@ -22,26 +22,12 @@ app.post("/", async function(req, res) {
     CLONE_REPO_TEMPLATE_REPO_PATH
   } = req.webtaskContext.secrets;
 
-  const { name, webhook_url, config_vars = {} } = req.body;
+  const { name, repo_path, webhook_url, config_vars = {} } = req.body;
   if (!name || !webhook_url || !config_vars) {
     return res.status(400).json({
       message:
         "App name, webhook_url, config_vars is required to create new Strapi app!"
     });
-  }
-
-  try {
-    cloned_github_repo = await axios({
-      url: CLONE_REPO_TEMPLATE_URL,
-      method: "POST",
-      data: {
-        new_repo_name: req.body.name,
-        new_repo_owner: CLONE_REPO_TEMPLATE_OWNER,
-        repo_template_path: CLONE_REPO_TEMPLATE_REPO_PATH
-      }
-    });
-  } catch (err) {
-    return res.status(500).json(err);
   }
 
   // Create new web app on Heroku
@@ -98,7 +84,8 @@ app.post("/", async function(req, res) {
             ordinal: 0
           },
           {
-            buildpack: "https://github.com/heroku/heroku-buildpack-multi-procfile"
+            buildpack:
+              "https://github.com/heroku/heroku-buildpack-multi-procfile"
           }
         ]
       }
@@ -134,9 +121,7 @@ app.post("/", async function(req, res) {
       try {
         data = {
           app_id: heroku_app.data.id,
-          repo_path:
-            cloned_github_repo.data.data.cloneTemplateRepository.repository
-              .nameWithOwner
+          repo_path
         };
       } catch (err) {
         console.log("Something went wrong preparing data!", err);
