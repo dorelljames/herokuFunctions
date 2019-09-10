@@ -1,34 +1,41 @@
-var express    = require('express');
-var Webtask    = require('webtask-tools');
+var express = require('express');
+var Webtask = require('webtask-tools');
 var bodyParser = require('body-parser');
-var axios      = require("axios");
+var axios = require('axios');
 var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/', function(req, res) {
-  const { APP_TOKEN_LIVE } = req.webtaskContext.secrets;
-  const { app_id, config_vars } = req.body
+function setConfigVars({ req, res, APP_TOKEN }) {
+  const { app_id, config_vars } = req.body;
   if (!req.body) {
-    return res.status(400).json({ name: "Name is required!" });
+    return res.status(400).json({ name: 'Name is required!' });
   }
 
-  axios({
+  return axios({
     url: `https://api.heroku.com/apps/${app_id}/config-vars`,
     method: 'PATCH',
     headers: {
-      'Accept': 'application/vnd.heroku+json; version=3',
+      Accept: 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + APP_TOKEN_LIVE
+      Authorization: 'Bearer ' + APP_TOKEN,
     },
-    data: config_vars
+    data: config_vars,
   })
-    .then(function (response) {
-      res.status(200).json(response.data);
-    })
-    .catch(function (error) {
-      res.status(500).json(error);
-    });
+    .then(response => res.status(200).json(response.data))
+    .catch(err => res.status(500).json(err));
+}
+
+app.post('/', async function(req, res) {
+  const { APP_TOKEN } = req.webtaskContext.secrets;
+
+  await setConfigVars({ req, res, APP_TOKEN });
+});
+
+app.post('/LIVE', async function(req, res) {
+  const { APP_TOKEN_LIVE: APP_TOKEN } = req.webtaskContext.secrets;
+
+  await setConfigVars({ req, res, APP_TOKEN });
 });
 
 module.exports = Webtask.fromExpress(app);
