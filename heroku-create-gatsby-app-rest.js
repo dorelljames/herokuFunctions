@@ -7,7 +7,41 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/', async function(req, res) {
+async function makeRequest({
+  url,
+  method = 'POST',
+  data,
+  delay = 0,
+  description = null,
+}) {
+  if (delay !== 0) {
+    await setTimeout(function() {
+      console.log(`Delaying for ${delay} ms`);
+    }, delay);
+  }
+
+  return axios({
+    url,
+    method,
+    data,
+  })
+    .then(response => {
+      if (description) {
+        console.log(`[INFO]: ${description}`);
+      }
+
+      return response;
+    })
+    .err(err => {
+      if (description) {
+        console.log(`[ERROR]: ${description}`);
+      }
+
+      return err;
+    });
+}
+
+async function processRestOfGatsbyHerokuApp({ req, res }) {
   const {
     SET_BUILDPACK_URL,
     SET_ENV_VARS_URL,
@@ -24,7 +58,7 @@ app.post('/', async function(req, res) {
     config_vars = {},
     heroku_app,
   } = req.body;
-  
+
   if (!name || !webhook_url || !config_vars || !repo_path || !heroku_app) {
     return res.status(400).json({
       message:
@@ -33,144 +67,98 @@ app.post('/', async function(req, res) {
   }
 
   // Set environment variables for database
-  try {
-    heroku_app_set_env_vars = axios({
-      url: SET_ENV_VARS_URL,
-      method: 'POST',
-      data: {
-        app_id: heroku_app.id,
-        config_vars: {
-          ...{
-            NODE_ENV: 'development',
-            PROCFILE: 'web/Procfile',
-          },
-          ...config_vars,
+  const heroku_app_set_env_vars = makeRequest({
+    url: SET_ENV_VARS_URL,
+    data: {
+      app_id: heroku_app.id,
+      config_vars: {
+        ...{
+          NODE_ENV: 'development',
+          PROCFILE: 'web/Procfile',
         },
+        ...config_vars,
       },
-    });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ message: 'Unable to set environment variables', error: err });
-  }
+    },
+    description: `Set environment vaariables for Heroku App ID: ${heroku_app.id}`,
+  });
 
   // Set Buildpacks
-  try {
-    heroku_app_set_buildpacks = axios({
-      url: SET_BUILDPACK_URL,
-      method: 'POST',
-      data: {
-        app_id: heroku_app.id,
-        buildpack: [
-          {
-            buildpack: 'heroku/nodejs',
-            ordinal: 0,
-          },
-          {
-            buildpack:
-              'https://github.com/heroku/heroku-buildpack-multi-procfile',
-          },
-        ],
-      },
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: 'Unable to set buildpack needed for this app!',
-      error: err,
-    });
-  }
+  const heroku_app_set_buildpacks = makeRequest({
+    url: SET_BUILDPACK_URL,
+    data: {
+      app_id: heroku_app.id,
+      buildpack: [
+        {
+          buildpack: 'heroku/nodejs',
+          ordinal: 0,
+        },
+        {
+          buildpack:
+            'https://github.com/heroku/heroku-buildpack-multi-procfile',
+        },
+      ],
+    },
+    description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`,
+  });
 
   // Add webhook to notify WebriQ App successful build
-  try {
-    heroku_app_set_webhooks = axios({
-      url: SET_BUILD_WEBHOOKS_URL,
-      method: 'POST',
-      data: {
-        app_id: heroku_app.id,
-        url: webhook_url,
-      },
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: 'Unable to set webhooks for build result',
-      error: err,
-    });
-  }
+  const heroku_app_set_webhooks = makeRequest({
+    url: SET_BUILD_WEBHOOKS_URL,
+    data: {
+      app_id: heroku_app.id,
+      url: webhook_url,
+    },
+    description: `Set webhooks needed for Heroku App ID: ${heroku_app.id} to notify WebriQ app for build status`,
+  });
 
-  // App connect to GitHub
-  try {
-    heroku_app_connect_to_github = new Promise((resolve, reject) => {
-      let data;
-      try {
-        data = {
-          app_id: heroku_app.id,
-          repo_path,
-        };
-      } catch (err) {
-        console.log('Something went wrong preparing data!', err);
-      }
+  const heroku_app_connect_to_github = makeRequest({
+    url: CONNECT_TO_GITHUB_URL,
+    data: {
+      app_id: heroku_app.id,
+      repo_path,
+    },
+    description: `Connect repository ${repo_path} for continuous deployment of Heroku app`,
+    delay: 2500,
+  });
 
-      setTimeout(function() {
-        axios({
-          url: CONNECT_TO_GITHUB_URL,
-          method: 'POST',
-          data,
-        })
-          .then(response => resolve(response))
-          .catch(err => reject(err));
-      }, 2500);
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: 'Unable to connect to GitHub for app',
-      error: err,
-    });
-  }
-
-  Promise.all([
+  const results = await Promise.all([
     heroku_app_set_env_vars,
     heroku_app_set_webhooks,
     heroku_app_set_buildpacks,
     heroku_app_connect_to_github,
-  ]).then(async results => {
-    // Set automatic deploy
-    try {
-      heroku_app_enable_autodeploys = await axios({
-        url: ENABLE_AUTODEPLOYS,
-        method: 'POST',
-        data: {
-          app_id: heroku_app.id,
-        },
-      });
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Unable to connect to enable autodeploys',
-        error: err,
-      });
-    }
+  ]);
 
-    // Begin deploy master branch
-    try {
-      heroku_app_enable_autodeploys = await axios({
-        url: TRIGGER_NEW_BUILD_URL,
-        method: 'POST',
-        data: {
-          app_id: heroku_app.id,
-        },
-      });
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Unable to trigger new build',
-        error: err,
-      });
-    }
-
-    return res.status(201).json({
-      message:
-        'Successfully processed necessary configurations for  Gatsby app on Heroku to build!',
-      data: heroku_app.data,
-    });
+  // Set automatic deploy
+  const heroku_app_enable_autodeploys = makeRequest({
+    url: ENABLE_AUTODEPLOYS,
+    data: {
+      app_id: heroku_app.id,
+    },
+    description: `Enable automatic deployment of ${repo_path} for new commits pushed to repository`,
   });
+
+  // Begin deploy master branch
+  const heroku_trigger_new_build = makeRequest({
+    url: TRIGGER_NEW_BUILD_URL,
+    data: {
+      app_id: heroku_app.id,
+    },
+    description: `Trigger new build for Heroku App ID: ${heroku_app.id} `,
+  });
+
+  return res.status(201).json({
+    message:
+      'Successfully processed necessary configurations for  Gatsby app on Heroku to build!',
+    data: heroku_app.data,
+  });
+}
+
+app.post('/LIVE', async function(req, res) {
+  await processRestOfGatsbyHerokuApp({ req, res });
+});
+
+app.post('/', async function(req, res) {
+  await processRestOfGatsbyHerokuApp({ req, res });
 });
 
 module.exports = Webtask.fromExpress(app);
