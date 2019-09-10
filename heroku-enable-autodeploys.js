@@ -26,7 +26,7 @@ function enableAutoDeploys({ req, res, APP_TOKEN }) {
       branch: repo_branch,
     },
   })
-    .then(response => res.status(201).json(response.data))
+    .then(response => res.status(200).json(response.data))
     .catch(err => res.status(500).json(err));
 }
 
