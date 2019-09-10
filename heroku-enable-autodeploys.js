@@ -18,7 +18,7 @@ function enableAutoDeploys({ req, res, APP_TOKEN }) {
     headers: {
       Accept: 'application/vnd.heroku+json; version=3',
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + APP_TOKEN_LIVE,
+      Authorization: 'Bearer ' + APP_TOKEN,
     },
     data: {
       app: `${app_id}`,
