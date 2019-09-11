@@ -32,6 +32,7 @@ async function makeRequest({
   }
 
   const requestURL = isLIVE ? url + '/LIVE' : url;
+  console.log(requestURL);
 
   return axios({
     requestURL,
