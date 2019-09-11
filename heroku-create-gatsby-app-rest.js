@@ -69,8 +69,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     repo_path,
     webhook_url,
     config_vars = {},
-    heroku_app,
-    isLIVE = false
+    heroku_app
   } = req.body;
 
   if (!name || !webhook_url || !config_vars || !repo_path || !heroku_app) {
@@ -94,7 +93,6 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
       }
     },
     description: `Set environment vaariables for Heroku App ID: ${heroku_app.id}`,
-    isLIVE,
   });
 
   // Set Buildpacks
@@ -113,8 +111,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
         },
       ],
     },
-    description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`,
-    isLIVE
+    description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`
   });
 
   // Add webhook to notify WebriQ App successful build
@@ -129,7 +126,6 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
   });
 
   const heroku_app_connect_to_github = makeRequest({
-    isLIVE,
     url: CONNECT_TO_GITHUB_URL,
     data: {
       app_id: heroku_app.id,
@@ -148,7 +144,6 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
 
   // Set automatic deploy
   const heroku_app_enable_autodeploys = makeRequest({
-    isLIVE,
     url: ENABLE_AUTODEPLOYS,
     data: {
       app_id: heroku_app.id,
@@ -158,7 +153,6 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
 
   // Begin deploy master branch
   const heroku_trigger_new_build = makeRequest({
-    isLIVE,
     url: TRIGGER_NEW_BUILD_URL,
     data: {
       app_id: heroku_app.id,
@@ -175,16 +169,11 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
 
 app.post('/LIVE', async function(req, res) {
   setEnvironment('production');
-  
-  console.log(environment);
-  res.json({});
-  
-  // await processRestOfGatsbyHerokuApp({ req, res, isLIVE: true });
+  await processRestOfGatsbyHerokuApp({ req, res, isLIVE: true });
 });
 
 app.post('/', async function(req, res) {
-  console.log(environment);
-  // await processRestOfGatsbyHerokuApp({ req, res });
+  await processRestOfGatsbyHerokuApp({ req, res });
 });
 
 module.exports = Webtask.fromExpress(app);
