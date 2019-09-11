@@ -56,7 +56,7 @@ async function makeRequest({
     });
 }
 
-async function createHerokuAppEntry({ req, res }) {
+function createHerokuAppEntry({ req, res }) {
   const {
     CREATE_APP_URL,
     PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
@@ -78,9 +78,10 @@ async function createHerokuAppEntry({ req, res }) {
       name,
     },
     description: 'Creating Heroku app',
-  }).catch(err =>
+  }).catch(err => {
     res.status(500).json({ err, message: 'Unable to create Heroku app!' })
-  );
+    return;
+  });
 
   console.log('heroku_app', heroku_app);
 
