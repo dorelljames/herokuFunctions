@@ -13,7 +13,7 @@ const environment = {
 
 const setEnvironment = (env) => {
   if (env === 'production') {
-    return enviroment.production = true;
+    return environment.production = true;
   }
 }
 
