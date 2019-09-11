@@ -7,13 +7,23 @@ var app = express();
 
 app.use(bodyParser.json());
 
+const environment = {
+  production: false
+}
+
+const setEnvironment = (env) => {
+  if (env === 'production') {
+    return enviroment.production = true;
+  }
+}
+
 async function makeRequest({
   url,
   method = 'POST',
   data,
   delay = 0,
   description = null,
-  isLIVE = false,
+  isLIVE = false
 }) {
   if (delay !== 0) {
     await setTimeout(function() {
@@ -21,7 +31,7 @@ async function makeRequest({
     }, delay);
   }
 
-  const requestURL = isLIVE ? url + '/LIVE' : url;
+  const requestURL = isLIVE ? url + '/LIVE' : url
 
   return axios({
     requestURL,
@@ -44,7 +54,7 @@ async function makeRequest({
     });
 }
 
-async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
+async function processRestOfGatsbyHerokuApp({ req, res }) {
   const {
     SET_BUILDPACK_URL,
     SET_ENV_VARS_URL,
@@ -60,6 +70,7 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
     webhook_url,
     config_vars = {},
     heroku_app,
+    isLIVE = false
   } = req.body;
 
   if (!name || !webhook_url || !config_vars || !repo_path || !heroku_app) {
@@ -80,9 +91,10 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
           PROCFILE: 'web/Procfile',
         },
         ...config_vars,
-      },
+      }
     },
     description: `Set environment vaariables for Heroku App ID: ${heroku_app.id}`,
+    isLIVE,
   });
 
   // Set Buildpacks
@@ -102,10 +114,12 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
       ],
     },
     description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`,
+    isLIVE
   });
 
   // Add webhook to notify WebriQ App successful build
   const heroku_app_set_webhooks = makeRequest({
+    isLIVE,
     url: SET_BUILD_WEBHOOKS_URL,
     data: {
       app_id: heroku_app.id,
@@ -115,6 +129,7 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
   });
 
   const heroku_app_connect_to_github = makeRequest({
+    isLIVE,
     url: CONNECT_TO_GITHUB_URL,
     data: {
       app_id: heroku_app.id,
@@ -133,6 +148,7 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
 
   // Set automatic deploy
   const heroku_app_enable_autodeploys = makeRequest({
+    isLIVE,
     url: ENABLE_AUTODEPLOYS,
     data: {
       app_id: heroku_app.id,
@@ -142,6 +158,7 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
 
   // Begin deploy master branch
   const heroku_trigger_new_build = makeRequest({
+    isLIVE,
     url: TRIGGER_NEW_BUILD_URL,
     data: {
       app_id: heroku_app.id,
@@ -157,7 +174,12 @@ async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
 }
 
 app.post('/LIVE', async function(req, res) {
-  await processRestOfGatsbyHerokuApp({ req, res, isLIVE: true });
+  setEnvironment('production');
+  
+  console.log(environment);
+  res.json({});
+  
+  // await processRestOfGatsbyHerokuApp({ req, res, isLIVE: true });
 });
 
 app.post('/', async function(req, res) {
