@@ -49,7 +49,7 @@ async function makeRequest({
     .catch(err => {
       if (description) {
         console.log(`[ERROR]: ${description}`);
-        console.log(`[ERRORDATA]: ${err}`);
+        console.log(`[ERROR_RESULT]: ${err}`);
       }
 
       return err;
