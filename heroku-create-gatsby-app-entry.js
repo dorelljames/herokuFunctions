@@ -76,7 +76,8 @@ async function createHerokuAppEntry({ req, res }) {
     data: {
       name,
     },
-  });
+  }).catch(err => res.status(500).json(err));
+
 
   // Send request to process app
   makeRequest({
