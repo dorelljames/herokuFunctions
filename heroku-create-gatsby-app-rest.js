@@ -44,7 +44,7 @@ async function makeRequest({
     });
 }
 
-async function processRestOfGatsbyHerokuApp({ req, res }) {
+async function processRestOfGatsbyHerokuApp({ req, res, isLIVE }) {
   const {
     SET_BUILDPACK_URL,
     SET_ENV_VARS_URL,
