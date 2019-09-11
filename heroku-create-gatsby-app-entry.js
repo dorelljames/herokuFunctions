@@ -56,7 +56,7 @@ async function makeRequest({
     });
 }
 
-function createHerokuAppEntry({ req, res }) {
+async function createHerokuAppEntry({ req, res }) {
   const {
     CREATE_APP_URL,
     PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
