@@ -13,6 +13,7 @@ const environment = {
 
 const setEnvironment = env => {
   if (env === 'production') {
+    console.log("[INFO] Running in production mode...");
     return (environment.production = true);
   }
 };
