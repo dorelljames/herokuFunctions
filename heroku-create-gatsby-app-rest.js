@@ -23,7 +23,7 @@ async function makeRequest({
   data,
   delay = 0,
   description = null,
-  isLIVE = false
+  isLIVE = environment.production
 }) {
   if (delay !== 0) {
     await setTimeout(function() {
