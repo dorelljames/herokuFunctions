@@ -117,7 +117,6 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
 
   // Add webhook to notify WebriQ App successful build
   const heroku_app_set_webhooks = makeRequest({
-    isLIVE,
     url: SET_BUILD_WEBHOOKS_URL,
     data: {
       app_id: heroku_app.id,
