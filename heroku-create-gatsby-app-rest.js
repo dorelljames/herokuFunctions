@@ -183,7 +183,8 @@ app.post('/LIVE', async function(req, res) {
 });
 
 app.post('/', async function(req, res) {
-  await processRestOfGatsbyHerokuApp({ req, res });
+  console.log(environment);
+  // await processRestOfGatsbyHerokuApp({ req, res });
 });
 
 module.exports = Webtask.fromExpress(app);
