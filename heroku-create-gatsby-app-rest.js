@@ -35,7 +35,7 @@ async function makeRequest({
   console.log(requestURL);
 
   return axios({
-    requestURL,
+    url: requestURL,
     method,
     data,
   })
