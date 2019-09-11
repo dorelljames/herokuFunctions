@@ -13,7 +13,7 @@ const environment = {
 
 const setEnvironment = env => {
   if (env === 'production') {
-    console.log("[INFO] Running in production mode...");
+    console.log('[INFO] Running in production mode...');
     return (environment.production = true);
   }
 };
@@ -76,10 +76,10 @@ async function createHerokuAppEntry({ req, res }) {
     data: {
       name,
     },
+    description: 'Creating Heroku app',
   }).catch(err => console.log(err));
 
-  console.log('heroku_app', heroku_app)
-
+  console.log('heroku_app', heroku_app);
 
   // Send request to process app
   // makeRequest({
