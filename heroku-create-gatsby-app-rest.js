@@ -13,6 +13,7 @@ async function makeRequest({
   data,
   delay = 0,
   description = null,
+  isLIVE = false
 }) {
   if (delay !== 0) {
     await setTimeout(function() {
@@ -20,8 +21,10 @@ async function makeRequest({
     }, delay);
   }
 
+  const requestURL = isLIVE ? url + '/LIVE' : url
+
   return axios({
-    url,
+    requestURL,
     method,
     data,
   })
@@ -154,7 +157,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
 }
 
 app.post('/LIVE', async function(req, res) {
-  await processRestOfGatsbyHerokuApp({ req, res });
+  await processRestOfGatsbyHerokuApp({ req, res, isLIVE: true });
 });
 
 app.post('/', async function(req, res) {
