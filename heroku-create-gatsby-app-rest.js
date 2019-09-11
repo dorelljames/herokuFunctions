@@ -170,7 +170,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
 
 app.post('/LIVE', async function(req, res) {
   setEnvironment('production');
-  await processRestOfGatsbyHerokuApp({ req, res, isLIVE: true });
+  await processRestOfGatsbyHerokuApp({ req, res });
 });
 
 app.post('/', async function(req, res) {
