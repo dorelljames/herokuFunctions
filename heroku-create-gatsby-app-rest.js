@@ -8,14 +8,14 @@ var app = express();
 app.use(bodyParser.json());
 
 const environment = {
-  production: false
-}
+  production: false,
+};
 
-const setEnvironment = (env) => {
+const setEnvironment = env => {
   if (env === 'production') {
-    return environment.production = true;
+    return (environment.production = true);
   }
-}
+};
 
 async function makeRequest({
   url,
@@ -23,7 +23,7 @@ async function makeRequest({
   data,
   delay = 0,
   description = null,
-  isLIVE = environment.production
+  isLIVE = environment.production,
 }) {
   if (delay !== 0) {
     await setTimeout(function() {
@@ -31,7 +31,7 @@ async function makeRequest({
     }, delay);
   }
 
-  const requestURL = isLIVE ? url + '/LIVE' : url
+  const requestURL = isLIVE ? url + '/LIVE' : url;
 
   return axios({
     requestURL,
@@ -69,7 +69,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     repo_path,
     webhook_url,
     config_vars = {},
-    heroku_app
+    heroku_app,
   } = req.body;
 
   if (!name || !webhook_url || !config_vars || !repo_path || !heroku_app) {
@@ -90,7 +90,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
           PROCFILE: 'web/Procfile',
         },
         ...config_vars,
-      }
+      },
     },
     description: `Set environment vaariables for Heroku App ID: ${heroku_app.id}`,
   });
@@ -111,7 +111,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
         },
       ],
     },
-    description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`
+    description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`,
   });
 
   // Add webhook to notify WebriQ App successful build
