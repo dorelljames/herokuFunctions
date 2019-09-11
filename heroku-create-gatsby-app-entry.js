@@ -78,7 +78,9 @@ async function createHerokuAppEntry({ req, res }) {
       name,
     },
     description: 'Creating Heroku app',
-  }).catch(err => console.log(err));
+  }).catch(err =>
+    res.status(500).json({ err, message: 'Unable to create Heroku app!' })
+  );
 
   console.log('heroku_app', heroku_app);
 
