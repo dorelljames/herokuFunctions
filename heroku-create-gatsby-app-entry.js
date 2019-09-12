@@ -34,7 +34,7 @@ async function makeRequest({
   }
 
   const requestURL = isLIVE ? url + '/LIVE' : url;
-  const { sandbox_request } = data;
+  const { sandbox_request, webriq_sandbox_webhook_url } = data;
 
   return axios({
     url: requestURL,
@@ -46,9 +46,9 @@ async function makeRequest({
         console.log(`[INFO]: ${description}`);
       }
 
-      if (webriq_sandbox_id) {
+      if (webriq_sandbox_id && webriq_sandbox_webhook_url) {
         axios
-          .post(sandbox_request.url, {
+          .post(webriq_sandbox_webhook_url, {
             source: 'webtask',
             type: 'sandbox_creation',
             webriq_sandbox_id: data && data.webriq_sandbox_id,
@@ -76,9 +76,9 @@ async function makeRequest({
         console.log(`[ERROR]: ${description}`);
       }
 
-      if (sandbox_request) {
+      if (webriq_sandbox_id && webriq_sandbox_webhook_url) {
         axios
-          .post(sandbox_request.url, {
+          .post(webriq_sandbox_webhook_url, {
             source: 'webtask',
             type: 'sandbox_creation',
             webriq_sandbox_id: data && data.webriq_sandbox_id,
