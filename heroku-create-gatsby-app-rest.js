@@ -22,6 +22,7 @@ async function makeRequest({
   method = 'POST',
   data,
   delay = 0,
+  label,
   description = null,
   isLIVE = environment.production,
 }) {
