@@ -125,6 +125,7 @@ async function createHerokuAppEntry({ req, res }) {
       name,
       webriq_sandbox_id,
     },
+    label: "HEROKU_CREATE_NEW_APP",
     description: 'Creating Heroku app',
   });
 
@@ -135,6 +136,7 @@ async function createHerokuAppEntry({ req, res }) {
       ...req.body,
       heroku_app: heroku_app.data,
     },
+    label: "PROCESS_REST_OF_HEROKU_GATSBY_APP"
   })
     .then(result => console.log('done successfully!'))
     .catch(err => console.log(err));
