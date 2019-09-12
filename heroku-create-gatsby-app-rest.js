@@ -33,7 +33,7 @@ async function makeRequest({
   }
 
   const requestURL = isLIVE ? url + '/LIVE' : url;
-  console.log(requestURL);
+  const { webriq_sandbox_id, webriq_sandbox_webhook_url } = data;
 
   return axios({
     url: requestURL,
@@ -45,11 +45,57 @@ async function makeRequest({
         console.log(`[INFO]: ${description}`);
       }
 
+      if (webriq_sandbox_id && webriq_sandbox_webhook_url) {
+        axios
+          .post(webriq_sandbox_webhook_url, {
+            source: 'webtask',
+            type: 'sandbox_creation',
+            webriq_sandbox_id: data && data.webriq_sandbox_id,
+            label,
+            description,
+            provider: 'heroku',
+            request: {
+              url: requestURL,
+              method,
+              data,
+              result: 'success',
+              log: '',
+            },
+          })
+          .then(response => console.log('Successfuly sent request log!'))
+          .catch(err =>
+            console.log('Something went wrong sending successful request log!')
+          );
+      }
+
       return response;
     })
     .catch(err => {
       if (description) {
         console.log(`[ERROR]: ${description}`);
+      }
+
+      if (webriq_sandbox_id && webriq_sandbox_webhook_url) {
+        axios
+          .post(webriq_sandbox_webhook_url, {
+            source: 'webtask',
+            type: 'sandbox_creation',
+            webriq_sandbox_id: data && data.webriq_sandbox_id,
+            label,
+            description,
+            provider: 'heroku',
+            request: {
+              url: requestURL,
+              method,
+              data,
+              result: 'error',
+              log: '',
+            },
+          })
+          .then(response => console.log('Successfuly sent error request log!'))
+          .catch(err =>
+            console.log('Something went wrong sending error request log!')
+          );
       }
 
       return err;
@@ -93,7 +139,9 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
         },
         ...config_vars,
       },
+      ...req.body,
     },
+    label: 'HEROKU_SET_ENV_VARS',
     description: `Set environment vaariables for Heroku App ID: ${heroku_app.id}`,
   });
 
@@ -112,7 +160,9 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
             'https://github.com/heroku/heroku-buildpack-multi-procfile',
         },
       ],
+      ...req.body,
     },
+    label: 'HEROKU_ADD_BUILDPACKS',
     description: `Set buildpacks needed for Heroku App ID: ${heroku_app.id}`,
   });
 
@@ -122,7 +172,9 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     data: {
       app_id: heroku_app.id,
       url: webhook_url,
+      ...req.body,
     },
+    label: 'HEROKU_ADD_WEBHOOKS',
     description: `Set webhooks needed for Heroku App ID: ${heroku_app.id} to notify WebriQ app for build status`,
   });
 
@@ -131,7 +183,9 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     data: {
       app_id: heroku_app.id,
       repo_path,
+      ...req.body,
     },
+    label: 'HEROKU_CONNECT_REPOSITORY',
     description: `Connect repository ${repo_path} for continuous deployment of Heroku app`,
     delay: 2500,
   });
@@ -148,7 +202,9 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     url: ENABLE_AUTODEPLOYS,
     data: {
       app_id: heroku_app.id,
+      ...req.body,
     },
+    label: 'HEROKU_ENABLE_AUTOMATIC_DEPLOYS',
     description: `Enable automatic deployment of ${repo_path} for new commits pushed to repository`,
   });
 
@@ -157,7 +213,9 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     url: TRIGGER_NEW_BUILD_URL,
     data: {
       app_id: heroku_app.id,
+      ...req.body,
     },
+    label: 'HEROKU_TRIGGER_NEW_BUILD',
     description: `Trigger new build for Heroku App ID: ${heroku_app.id} `,
   });
 
