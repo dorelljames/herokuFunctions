@@ -59,7 +59,7 @@ async function makeRequest({
               method,
               data,
               result: 'success',
-              log: '',
+              log: response && response.data,
             },
           })
           .then(response => console.log('Successfuly sent request log!'))
@@ -89,7 +89,7 @@ async function makeRequest({
               method,
               data,
               result: 'error',
-              log: '',
+              log: err && err.response ? err.response.data : (err.request ? err.request : err.message),
             },
           })
           .then(response => console.log('Successfuly sent error request log!'))
