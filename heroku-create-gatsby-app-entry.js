@@ -109,7 +109,7 @@ async function createHerokuAppEntry({ req, res }) {
     PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
   } = req.webtaskContext.secrets;
 
-  const { name, repo_path, webhook_url, webriq_sandbox_id } = req.body;
+  const { name, repo_path, webhook_url, webriq_sandbox_id, webriq_sandbox_webhook_url } = req.body;
   if (!name || !webhook_url || !repo_path) {
     return res.status(400).json({
       message:
@@ -124,8 +124,9 @@ async function createHerokuAppEntry({ req, res }) {
     data: {
       name,
       webriq_sandbox_id,
+      webriq_sandbox_webhook_url,
     },
-    label: "HEROKU_CREATE_NEW_APP",
+    label: 'HEROKU_CREATE_NEW_APP',
     description: 'Creating Heroku app',
   });
 
