@@ -46,7 +46,7 @@ async function makeRequest({
         console.log(`[INFO]: ${description}`);
       }
 
-      if (sandbox_request) {
+      if (webriq_sandbox_id) {
         axios
           .post(sandbox_request.url, {
             source: 'webtask',
