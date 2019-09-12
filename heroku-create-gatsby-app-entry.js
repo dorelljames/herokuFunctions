@@ -130,21 +130,21 @@ async function createHerokuAppEntry({ req, res }) {
   });
 
   // Send request to process app
-  makeRequest({
-    url: PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
-    data: {
-      ...req.body,
-      heroku_app: heroku_app.data,
-    },
-    label: "PROCESS_REST_OF_HEROKU_GATSBY_APP"
-  })
-    .then(result => console.log('done successfully!'))
-    .catch(err => console.log(err));
+  // makeRequest({
+  //   url: PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
+  //   data: {
+  //     ...req.body,
+  //     heroku_app: heroku_app.data,
+  //   },
+  //   label: "PROCESS_REST_OF_HEROKU_GATSBY_APP"
+  // })
+  //   .then(result => console.log('done successfully!'))
+  //   .catch(err => console.log(err));
 
-  return res.status(201).json({
-    message: 'Successfully created Gatsby app on Heroku!',
-    data: heroku_app && heroku_app.data,
-  });
+  // return res.status(201).json({
+  //   message: 'Successfully created Gatsby app on Heroku!',
+  //   data: heroku_app && heroku_app.data,
+  // });
 }
 
 app.post('/LIVE', async function(req, res) {
