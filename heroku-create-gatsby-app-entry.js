@@ -84,8 +84,6 @@ async function createHerokuAppEntry({ req, res }) {
     return;
   });
 
-  console.log('heroku_app', heroku_app);
-
   // Send request to process app
   makeRequest({
     url: PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
