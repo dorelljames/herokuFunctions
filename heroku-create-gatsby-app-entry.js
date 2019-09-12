@@ -23,6 +23,7 @@ async function makeRequest({
   method = 'POST',
   data,
   delay = 0,
+  label,
   description = null,
   isLIVE = environment.production,
 }) {
@@ -33,7 +34,7 @@ async function makeRequest({
   }
 
   const requestURL = isLIVE ? url + '/LIVE' : url;
-  console.log(requestURL);
+  const { sandbox_request } = data;
 
   return axios({
     url: requestURL,
@@ -45,12 +46,57 @@ async function makeRequest({
         console.log(`[INFO]: ${description}`);
       }
 
+      if (sandbox_request) {
+        axios
+          .post(sandbox_request.url, {
+            source: 'webtask',
+            type: 'sandbox_creation',
+            webriq_sandbox_id: data && data.webriq_sandbox_id,
+            label,
+            description,
+            provider: 'heroku',
+            request: {
+              url: requestURL,
+              method,
+              data,
+              result: 'success',
+              log: '',
+            },
+          })
+          .then(response => console.log('Successfuly sent request log!'))
+          .catch(err =>
+            console.log('Something went wrong sending successful request log!')
+          );
+      }
+
       return response;
     })
     .catch(err => {
       if (description) {
         console.log(`[ERROR]: ${description}`);
-        console.log(`[ERROR_RESULT]: ${err}`);
+      }
+
+      if (sandbox_request) {
+        axios
+          .post(sandbox_request.url, {
+            source: 'webtask',
+            type: 'sandbox_creation',
+            webriq_sandbox_id: data && data.webriq_sandbox_id,
+            label,
+            description,
+            provider: 'heroku',
+            request: {
+              url: requestURL,
+              method,
+              data,
+              result: 'error',
+              log: '',
+            },
+          })
+          .then(response => console.log('Successfuly sent error request log!'))
+          .catch(err =>
+            console.log('Something went wrong sending error request log!')
+          );
       }
 
       return err;
@@ -63,7 +109,7 @@ async function createHerokuAppEntry({ req, res }) {
     PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
   } = req.webtaskContext.secrets;
 
-  const { name, repo_path, webhook_url } = req.body;
+  const { name, repo_path, webhook_url, webriq_sandbox_id } = req.body;
   if (!name || !webhook_url || !repo_path) {
     return res.status(400).json({
       message:
@@ -77,6 +123,7 @@ async function createHerokuAppEntry({ req, res }) {
     method: 'POST',
     data: {
       name,
+      webriq_sandbox_id,
     },
     description: 'Creating Heroku app',
   });
