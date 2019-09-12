@@ -34,7 +34,7 @@ async function makeRequest({
   }
 
   const requestURL = isLIVE ? url + '/LIVE' : url;
-  const { sandbox_request, webriq_sandbox_webhook_url } = data;
+  const { webriq_sandbox_id, webriq_sandbox_webhook_url } = data;
 
   return axios({
     url: requestURL,
