@@ -141,10 +141,10 @@ async function createHerokuAppEntry({ req, res }) {
   //   .then(result => console.log('done successfully!'))
   //   .catch(err => console.log(err));
 
-  // return res.status(201).json({
-  //   message: 'Successfully created Gatsby app on Heroku!',
-  //   data: heroku_app && heroku_app.data,
-  // });
+  return res.status(201).json({
+    message: 'Successfully created Gatsby app on Heroku!',
+    data: heroku_app && heroku_app.data,
+  });
 }
 
 app.post('/LIVE', async function(req, res) {
