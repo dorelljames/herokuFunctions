@@ -215,6 +215,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
       app_id: heroku_app.id,
       ...req.body,
     },
+    delay: 2500,
     label: 'HEROKU_TRIGGER_NEW_BUILD',
     description: `Trigger new build for Heroku App ID: ${heroku_app.id} `,
   });
