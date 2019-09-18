@@ -107,7 +107,11 @@ async function createHerokuAppEntry({ req, res }) {
   const {
     CREATE_APP_URL,
     PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
+    SANITY_TOKEN,
+    SANITY_TOKEN_LIVE
   } = req.webtaskContext.secrets;
+
+  const sanity_token = environment.production ? SANITY_TOKEN_LIVE : SANITY_TOKEN
 
   const { name, repo_path, webhook_url, webriq_sandbox_id, webriq_sandbox_webhook_url } = req.body;
   if (!name || !webhook_url || !repo_path) {
@@ -136,6 +140,7 @@ async function createHerokuAppEntry({ req, res }) {
     data: {
       ...req.body,
       heroku_app: heroku_app.data,
+      sanity_token
     },
     label: "PROCESS_REST_OF_HEROKU_GATSBY_APP"
   })
