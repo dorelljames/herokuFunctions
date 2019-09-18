@@ -118,6 +118,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
     webhook_url,
     config_vars = {},
     heroku_app,
+    sanity_token
   } = req.body;
 
   if (!name || !webhook_url || !repo_path || !heroku_app) {
@@ -136,6 +137,7 @@ async function processRestOfGatsbyHerokuApp({ req, res }) {
         ...{
           NODE_ENV: 'development',
           PROCFILE: 'web/Procfile',
+          SANITY_TOKEN: sanity_token
         },
         ...config_vars,
       },
