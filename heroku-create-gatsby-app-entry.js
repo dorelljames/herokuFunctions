@@ -60,7 +60,7 @@ async function makeRequest({
               method,
               data,
               result: 'success',
-              log: response && response.data
+              log: response && response.data,
             },
           })
           .then(response => console.log('Successfuly sent request log!'))
@@ -90,7 +90,10 @@ async function makeRequest({
               method,
               data,
               result: 'error',
-              log: err && err.response ? err.response.data : (err.request ? err.request : err.message),
+              log:
+                err && err.response
+                  ? err.response.data
+                  : err.request ? err.request : err.message,
             },
           })
           .then(response => console.log('Successfuly sent error request log!'))
@@ -108,12 +111,20 @@ async function createHerokuAppEntry({ req, res }) {
     CREATE_APP_URL,
     PROCESS_REST_OF_HEROKU_GATSBY_APP_URL,
     SANITY_TOKEN,
-    SANITY_TOKEN_LIVE
+    SANITY_TOKEN_LIVE,
   } = req.webtaskContext.secrets;
 
-  const sanity_token = environment.production ? SANITY_TOKEN_LIVE : SANITY_TOKEN
+  const sanity_token = environment.production
+    ? SANITY_TOKEN_LIVE
+    : SANITY_TOKEN;
 
-  const { name, repo_path, webhook_url, webriq_sandbox_id, webriq_sandbox_webhook_url } = req.body;
+  const {
+    name,
+    repo_path,
+    webhook_url,
+    webriq_sandbox_id,
+    webriq_sandbox_webhook_url,
+  } = req.body;
   if (!name || !webhook_url || !repo_path) {
     return res.status(400).json({
       message:
@@ -140,9 +151,9 @@ async function createHerokuAppEntry({ req, res }) {
     data: {
       ...req.body,
       heroku_app: heroku_app.data,
-      sanity_token
+      sanity_token,
     },
-    label: "PROCESS_REST_OF_HEROKU_GATSBY_APP"
+    label: 'PROCESS_REST_OF_HEROKU_GATSBY_APP',
   })
     .then(result => console.log('done successfully!'))
     .catch(err => console.log(err));
